@@ -1,0 +1,6 @@
+27/09/24 
+- Se le dio una distribucion de carpetas mas formal al proyecto
+- Se levanto el servidor usando html y express
+30/09/24
+- Se termino la el backend de una de las tablas, para comenzar a hacer
+  pruebas con el frontend.
