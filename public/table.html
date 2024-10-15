@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex justify-center">
+  <div class="container md h-screen py-4">
+    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr id="headers">
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              4
+            </th>
+            <td class="px-6 py-4">Silver</td>
+            <td class="px-6 py-4">Laptop</td>
+            <td class="px-6 py-4 text-right w-[2rem]">
+              <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+            </td>
+            <td class="px-6 py-4 text-right w-[2rem]">
+              <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script src="table.js" type="module"></script>
+</body>
+
+</html>
