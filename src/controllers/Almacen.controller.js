@@ -2,16 +2,18 @@ import { getConnection, sql } from "../database/connection.js";
 
 export const getAlmacenes = async (req, res) => {
   try {
-
     const pool = await getConnection();
     const result = await pool.request().query("SELECT * FROM Almacen");
-    res.json(result.recordset);
+    const almacenConId = result.recordset.map((almacen, index) => ({
+      id: index + 1,
+      ...almacen,
+    }));
+    res.json(almacenConId);
   } catch (error) {
     res.status(500);
     res.send(error.message);
   }
 };
-
 
 export const createNewAlmacen = async (req, res) => {
   const { Direccion, Tipo} = req.body;

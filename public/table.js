@@ -1,4 +1,4 @@
-const URL_API = "https://jsonplaceholder.typicode.com/users";
+const URL_API = "http://localhost:3000/api/guias";
 
 const generateHeaders = (headers) => {
   let headerHTML = `<th scope="col" class="px-6 py-3 w-[2rem]">ID</th>`;
