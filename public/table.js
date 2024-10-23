@@ -39,7 +39,7 @@ const fillTableBody = async (numberOfFields) => {
               <a href="#" class="font-medium text-gray-900 hover:underline edit">Editar</a>
             </td>
             <td class="px-6 py-4 text-right w-[2rem]">
-              <a href="#" class="font-medium text-red-800 hover:underline" id="del">Remove</a>
+              <a href="#" class="font-medium text-red-800 hover:underline" id="del">Eliminar</a>
             </td>
         </tr>
       `;
@@ -57,41 +57,62 @@ const closeButton = document.getElementById("close");
 const form = document.getElementById("form-edit");
 
 if (headers) {
+  let editData = [];
   const headersList = headers.split(";");
   generateHeaders(headersList);
+
   (async () => {
     await fillTableBody(3);
     const elements = document.getElementsByClassName("edit");
     const edit = document.getElementById("container-edit");
-    const toggleButton = elements[0];
 
-    toggleButton.addEventListener("click", () => {
-      edit.classList.remove("hidden");
+    Array.from(elements).forEach((toggleButton) => {
+      toggleButton.addEventListener("click", () => {
+        edit.classList.remove("hidden");
+
+        const row = toggleButton.closest("tr");
+        const cells = row.querySelectorAll("td");
+
+        editData = [];
+        cells.forEach((cell, index) => {
+          if (
+            index !== 0 &&
+            index !== cells.length - 1 &&
+            index !== cells.length - 2
+          ) {
+            editData.push(cell.textContent.trim());
+          }
+        });
+
+        console.log(editData);
+
+        let htmlForm = "";
+        headersList.forEach((header, index) => {
+          htmlForm += `
+              <div class="mb-4">
+                  <label class="block text-gray-300 text-sm font-bold mb-2">${header}</label>
+                  <input
+                      class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      type="text" value="${editData[index]}">
+              </div>
+              `;
+        });
+
+        htmlForm += `
+          <div class="flex items-center justify-end">
+              <button
+                  class="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  type="button">
+                  Confirmar
+              </button>
+          </div>`;
+
+        form.innerHTML = htmlForm;
+      });
     });
+
     closeButton.addEventListener("click", () => {
       edit.classList.add("hidden");
     });
-    let htmlForm;
-    headersList.forEach((header) => {
-      htmlForm += `
-      <div class="mb-4">
-        <label class="block text-gray-300 text-sm font-bold mb-2" for="username">
-          ${header}
-        </label>
-        <input
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          type="text">
-      </div>
-      `;
-    });
-    htmlForm += `   
-      <div class="flex items-center justify-end">
-        <button
-          class="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          type="button">
-          Confirmar
-        </button>
-      </div>`;
-    form.innerHTML = htmlForm;
   })();
 }
