@@ -1,16 +1,19 @@
 const almacen = document.getElementById("almacen");
 almacen.addEventListener("click", () => {
-  sessionStorage.setItem("tableHeaders", "Dirección;Tipo");
+  //http://localhost:3000/api/almacenes
+  sessionStorage.setItem("tableHeaders", "IdAlmacen;Dirección;Tipo");
 });
 
 const camion = document.getElementById("camion");
 camion.addEventListener("click", () => {
+  //http://localhost:3000/api/camiones
   sessionStorage.setItem("tableHeaders", "Placa;Modelo");
 });
 
 const guiaRemision = document.getElementById("guia-remision");
 guiaRemision.addEventListener("click", () => {
-  sessionStorage.setItem("tableHeaders", "Destinatario;Fecha");
+  //http://localhost:3000/api/guias
+  sessionStorage.setItem("tableHeaders", "IdGuia;Destinatario;Fecha");
 });
 
 const orden = document.getElementById("orden");

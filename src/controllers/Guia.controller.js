@@ -5,7 +5,11 @@ export const getGuias = async (req, res) => {
 
     const pool = await getConnection();
     const result = await pool.request().query("SELECT * FROM Guia_de_reemision");
-    res.json(result.recordset);
+    const guiasConId = result.recordset.map((guias, index) => ({
+      id: index + 1,
+      ...guias,
+    }));
+    res.json(guiasConId);
   } catch (error) {
     res.status(500);
     res.send(error.message);

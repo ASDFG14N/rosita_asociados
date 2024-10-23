@@ -1,4 +1,4 @@
-const URL_API = "https://jsonplaceholder.typicode.com/users";
+const e = require("cors");
 
 const generateHeaders = (headers) => {
   let headerHTML = `<th scope="col" class="px-6 py-3 w-[2rem]">ID</th>`;
@@ -10,9 +10,9 @@ const generateHeaders = (headers) => {
   headersRow.innerHTML = headerHTML;
 };
 
-const fillTableBody = async (numberOfFields) => {
+const fillTableBody = async (numberOfFields, endpoint) => {
   try {
-    const response = await fetch(URL_API);
+    const response = await fetch(endpoint);
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
@@ -34,6 +34,7 @@ const fillTableBody = async (numberOfFields) => {
       for (let i = 1; i <= numberOfFields && i < itemValues.length; i++) {
         row += `<td class="px-6 py-4 text-black">${itemValues[i]}</td>`;
       }
+
       row += `
             <td class="px-6 py-4 text-right w-[2rem]">
               <a href="#" class="font-medium text-gray-900 hover:underline edit">Editar</a>
@@ -58,11 +59,34 @@ const form = document.getElementById("form-edit");
 
 if (headers) {
   let editData = [];
+  let endpoint = "";
   const headersList = headers.split(";");
   generateHeaders(headersList);
 
   (async () => {
-    await fillTableBody(3);
+    switch (headers.trim()) {
+      case "Dirección;Tipo":
+        endpoint = "http://localhost:3000/api/almacenes";
+        break;
+      case "Placa;Modelo":
+        endpoint = "http://localhost:3000/api/camiones";
+        break;
+      case "Destinatario;Fecha":
+        endpoint = "http://localhost:3000/api/guias";
+        break;
+      case "Cantidad;Precio":
+        endpoint = "http://localhost:3000/api/ordenes";
+        break;
+      case "Nombre;Cantidad;Precio;Categoria;Vencimiento":
+        endpoint = "http://localhost:3000/api/productos";
+        break;
+      case "DNI;Nombre;Direccion":
+        endpoint = "http://localhost:3000/api/trabajadores";
+        break;
+      default:
+        break;
+    }
+    await fillTableBody(headersList.length, endpoint);
     const elements = document.getElementsByClassName("edit");
     const edit = document.getElementById("container-edit");
 
