@@ -1,4 +1,4 @@
-const e = require("cors");
+const URL_API = "https://jsonplaceholder.typicode.com/users";
 
 const generateHeaders = (headers) => {
   let headerHTML = `<th scope="col" class="px-6 py-3 w-[2rem]">ID</th>`;

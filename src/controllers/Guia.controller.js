@@ -16,7 +16,6 @@ export const getGuias = async (req, res) => {
   }
 };
 
-
 export const createNewGuia = async (req, res) => {
   const { Destinatario, Fecha} = req.body;
   
