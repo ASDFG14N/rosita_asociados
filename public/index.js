@@ -18,7 +18,7 @@ guiaRemision.addEventListener("click", () => {
 
 const orden = document.getElementById("orden");
 orden.addEventListener("click", () => {
-  sessionStorage.setItem("tableHeaders", "Cantidad;Precio");
+  sessionStorage.setItem("tableHeaders", "IdOrden;Cantidad;Precio;IdProducto;IdGuia");
 });
 
 const producto = document.getElementById("producto");

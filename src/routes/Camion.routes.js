@@ -16,10 +16,10 @@ router.post("/camiones", createNewCamion);
 
 router.get("/camiones/cantidad", getTotalCamion);
 
-router.get("/camiones/:placa", getCamionByPlaca);
+router.get("/camiones/:Placa", getCamionByPlaca);
 
-router.delete("/camiones/:placa", deleteCamionByPlaca);
+router.delete("/camiones/:Placa", deleteCamionByPlaca);
 
-router.put("/camiones/:placa", updateCamionByPlaca);
+router.put("/camiones/:Placa", updateCamionByPlaca);
 
 export default router;

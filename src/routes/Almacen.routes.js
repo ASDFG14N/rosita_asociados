@@ -16,10 +16,10 @@ router.post("/almacenes", createNewAlmacen);
 
 router.get("/almacenes/cantidad", getTotalAlmacen);
 
-router.get("/almacenes/:id", getAlmacenById);
+router.get("/almacenes/:IdAlmacen", getAlmacenById);
 
-router.delete("/almacenes/:id", deleteAlmacenById);
+router.delete("/almacenes/:IdAlmacen", deleteAlmacenById);
 
-router.put("/almacenes/:id", updateAlmacenById);
+router.put("/almacenes/:IdAlmacen", updateAlmacenById);
 
 export default router;

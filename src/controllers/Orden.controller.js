@@ -5,11 +5,7 @@ export const getOrdenes = async (req, res) => {
 
     const pool = await getConnection();
     const result = await pool.request().query("SELECT * FROM Orden");
-    const ordenesConId = result.recordset.map((ordenes, index) => ({
-      id: index + 1,
-      ...ordenes,
-    }));
-    res.json(ordenesConId);
+    res.json(result.recordset);
   } catch (error) {
     res.status(500);
     res.send(error.message);

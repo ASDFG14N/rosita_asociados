@@ -16,10 +16,10 @@ router.post("/ordenes", createNewOrden);
 
 router.get("/ordenes/cantidad", getTotalOrden);
 
-router.get("/ordenes/:id", getOrdenById);
+router.get("/ordenes/:IdOrden", getOrdenById);
 
-router.delete("/ordenes/:id", deleteOrdenById);
+router.delete("/ordenes/:IdOrden", deleteOrdenById);
 
-router.put("/ordenes/:id", updateOrdenById);
+router.put("/ordenes/:IdOrden", updateOrdenById);
 
 export default router;

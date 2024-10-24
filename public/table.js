@@ -1,7 +1,7 @@
 const URL_API = "https://jsonplaceholder.typicode.com/users";
 
 const generateHeaders = (headers) => {
-  let headerHTML = `<th scope="col" class="px-6 py-3 w-[2rem]">ID</th>`;
+  let headerHTML = ``;
   headers.forEach((header) => {
     headerHTML += `<th scope="col" class="px-6 py-3">${header.toUpperCase()}</th>`;
   });
@@ -22,19 +22,17 @@ const fillTableBody = async (numberOfFields, endpoint) => {
     tableBody.innerHTML = "";
 
     data.forEach((item) => {
+      const itemValues = Object.values(item);
       let row = `
         <tr class="border-b bg-slate-500 dark:border-gray-700 hover:bg-gray-600">
             <td class="px-6 py-4 font-medium text-black whitespace-nowrap">
-              ${item.id}
+              ${itemValues[0]}
             </td>
       `;
-
-      const itemValues = Object.values(item);
 
       for (let i = 1; i <= numberOfFields && i < itemValues.length; i++) {
         row += `<td class="px-6 py-4 text-black">${itemValues[i]}</td>`;
       }
-
       row += `
             <td class="px-6 py-4 text-right w-[2rem]">
               <a href="#" class="font-medium text-gray-900 hover:underline edit">Editar</a>
@@ -65,16 +63,16 @@ if (headers) {
 
   (async () => {
     switch (headers.trim()) {
-      case "Dirección;Tipo":
+      case "IdAlmacen;Dirección;Tipo":
         endpoint = "http://localhost:3000/api/almacenes";
         break;
       case "Placa;Modelo":
         endpoint = "http://localhost:3000/api/camiones";
         break;
-      case "Destinatario;Fecha":
+      case "IdGuia;Destinatario;Fecha":
         endpoint = "http://localhost:3000/api/guias";
         break;
-      case "Cantidad;Precio":
+      case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
         endpoint = "http://localhost:3000/api/ordenes";
         break;
       case "Nombre;Cantidad;Precio;Categoria;Vencimiento":
