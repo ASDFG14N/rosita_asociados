@@ -1,9 +1,10 @@
 import { getConnection, sql } from "../database/connection.js";
 
-export const getAlmacenes = async (req, res) => {
+export const getTrabajadores = async (req, res) => {
   try {
+
     const pool = await getConnection();
-    const result = await pool.request().query("SELECT * FROM Almacen");
+    const result = await pool.request().query("SELECT * FROM Trabajador");
     res.json(result.recordset);
   } catch (error) {
     res.status(500);
@@ -11,10 +12,15 @@ export const getAlmacenes = async (req, res) => {
   }
 };
 
-export const createNewAlmacen = async (req, res) => {
-  const { Direccion, Tipo } = req.body;
+export const createNewTrabajador = async (req, res) => {
+  const {DNI, Nombre, Direccion} = req.body;
+  
 
-  if (Direccion == null || Tipo == null) {
+  if (
+    DNI == null || 
+    Nombre == null || 
+    Direccion == null
+) {
     return res.status(400).json({ msg: "Bad Request. Please fill all fields" });
   }
   try {
@@ -22,16 +28,17 @@ export const createNewAlmacen = async (req, res) => {
 
     const result = await pool
       .request()
+      .input("DNI", sql.VarChar, DNI)
+      .input("Nombre", sql.VarChar, Nombre)
       .input("Direccion", sql.VarChar, Direccion)
-      .input("Tipo", sql.VarChar, Tipo)
       .query(
-        "INSERT INTO Almacen (Direccion, Tipo) VALUES (@Direccion,@Tipo); SELECT SCOPE_IDENTITY() as IdAlmacen"
+        "INSERT INTO Producto (DNI, Nombre, Direccion) VALUES (@DNI, @Nombre, @Direccion); SELECT SCOPE_IDENTITY() as IdProducto"
       );
 
     res.json({
-      IdAlmacen,
-      Direccion,
-      Tipo,
+        DNI,
+        Nombre,
+        Direccion
     });
   } catch (error) {
     res.status(500);
@@ -39,14 +46,14 @@ export const createNewAlmacen = async (req, res) => {
   }
 };
 
-export const getAlmacenById = async (req, res) => {
+export const getTrabajadorByDNI = async (req, res) => {
   try {
     const pool = await getConnection();
-    //DENTRO DEL pool HACEMOS EL request CON EL query PARA BUSCAR
+    //DENTRO DEL pool HACEMOS EL request CON EL query PARA BUSCAR 
     const result = await pool
       .request()
-      .input("id", req.params.IdAlmacen)
-      .query("SELECT * FROM Almacen WHERE IdAlmacen = @id");
+      .input("id", req.params.DNI)
+      .query("SELECT * FROM Trabajador WHERE DNI = @id");
 
     return res.json(result.recordset[0]);
   } catch (error) {
@@ -55,14 +62,14 @@ export const getAlmacenById = async (req, res) => {
   }
 };
 
-export const deleteAlmacenById = async (req, res) => {
+export const deleteTrabajadorByDNI = async (req, res) => {
   try {
     const pool = await getConnection();
 
     const result = await pool
       .request()
-      .input("id", req.params.IdAlmacen)
-      .query("DELETE FROM Almacen WHERE IdAlmacen = @id");
+      .input("id", req.params.DNI)
+      .query("DELETE FROM Trabajador WHERE DNI = @id");
 
     if (result.rowsAffected[0] === 0) return res.sendStatus(404);
 
@@ -73,16 +80,21 @@ export const deleteAlmacenById = async (req, res) => {
   }
 };
 
-export const getTotalAlmacen = async (req, res) => {
+export const getTotalTrabajador = async (req, res) => {
+  
   const pool = await getConnection();
-  const result = await pool.request().query("SELECT COUNT(*) FROM Almacen");
+  const result = await pool.request().query("SELECT COUNT(*) FROM Trabajador");
   res.json(result.recordset[0][""]);
 };
 
-export const updateAlmacenById = async (req, res) => {
-  const { IdAlmacen, Direccion, Tipo } = req.body;
+export const updateTrabajadorByDNI = async (req, res) => {
+  const {DNI, Nombre, Direccion} = req.body;
 
-  if (IdAlmacen == null || Direccion == null || Tipo == null) {
+  if (
+    DNI == null || 
+    Nombre == null || 
+    Direccion == null
+  ) {
     return res.status(400).json({ msg: "Bad Request. Please fill all fields" });
   }
 
@@ -90,16 +102,16 @@ export const updateAlmacenById = async (req, res) => {
     const pool = await getConnection();
     const result = await pool
       .request()
-      .input("id", sql.VarChar, IdAlmacen)
+      .input("DNI", sql.VarChar, DNI)
+      .input("Nombre", sql.VarChar, Nombre)
       .input("Direccion", sql.VarChar, Direccion)
-      .input("Tipo", sql.VarChar, Tipo)
       .query(
-        "UPDATE Almacen SET Direccion = @Direccion, Tipo = @Tipo WHERE IdAlmacen = @id"
+        "UPDATE Trabajador SET Nombre = @Nombre, Direccion = @Direccion WHERE DNI = @DNI"
       );
 
     if (result.rowsAffected[0] === 0) return res.sendStatus(404);
 
-    res.json({ IdAlmacen, Direccion, Tipo });
+    res.json({ IdGuia, Destinatario, Fecha});
   } catch (error) {
     res.status(500);
     res.send(error.message);

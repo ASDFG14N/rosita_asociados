@@ -16,10 +16,10 @@ router.post("/guias", createNewGuia);
 
 router.get("/guias/cantidad", getTotalGuia);
 
-router.get("/guias/:id", getGuiaById);
+router.get("/guias/:IdGuia", getGuiaById);
 
-router.delete("/guias/:id", deleteGuiaById);
+router.delete("/guias/:IdGuia", deleteGuiaById);
 
-router.put("/guias/:id", updateGuiaById);
+router.put("/guias/:IdGuia", updateGuiaById);
 
 export default router;
