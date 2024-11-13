@@ -3,12 +3,8 @@ const closeButton = document.getElementById("close");
 const form = document.getElementById("form-edit");
 const editContainer = document.getElementById("container-edit");
 
-<<<<<<< HEAD
 const generateHTMLHeaders = (headers) => {
   const headersRow = document.getElementById("headers");
-=======
-const generateHeaders = (headers) => {
->>>>>>> 0a21c3aecf69d8d0cd5518a15717ae125cd5a82b
   let headerHTML = ``;
   headers.forEach((header) => {
     headerHTML += `<th scope="col" class="px-6 py-3">${header.toUpperCase()}</th>`;
@@ -33,13 +29,7 @@ const fillTableBody = async (numberOfFields, endpoint) => {
       const itemValues = Object.values(item);
       let row = `
         <tr class="border-b bg-slate-500 dark:border-gray-700 hover:bg-gray-600">
-<<<<<<< HEAD
           <td class="px-6 py-4 font-medium text-black whitespace-nowrap">${itemValues[0]}</td>
-=======
-            <td class="px-6 py-4 font-medium text-black whitespace-nowrap">
-              ${itemValues[0]}
-            </td>
->>>>>>> 0a21c3aecf69d8d0cd5518a15717ae125cd5a82b
       `;
 
       for (let i = 1; i <= numberOfFields && i < itemValues.length; i++) {
@@ -85,7 +75,6 @@ const generateHTMLForm = (headersList, editData) => {
         </button>
     </div>`;
 
-<<<<<<< HEAD
   form.innerHTML = htmlForm;
 
   const btnSend = document.getElementById("send");
@@ -100,29 +89,15 @@ const generateHTMLForm = (headersList, editData) => {
     switch (headers) {
       case "IdAlmacen;Dirección;Tipo":
         url = `http://localhost:3000/api/almacenes/${id}`;
-=======
-  (async () => {
-    switch (headers.trim()) {
-      case "IdAlmacen;Dirección;Tipo":
-        endpoint = "http://localhost:3000/api/almacenes";
->>>>>>> 0a21c3aecf69d8d0cd5518a15717ae125cd5a82b
         break;
       case "Placa;Modelo":
         url = `http://localhost:3000/api/camiones/${id}`;
         break;
-<<<<<<< HEAD
       case "Destinatario;Fecha":
         url = `http://localhost:3000/api/guias/${id}`;
         break;
       case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
         url = `http://localhost:3000/api/ordenes/${id}`;
-=======
-      case "IdGuia;Destinatario;Fecha":
-        endpoint = "http://localhost:3000/api/guias";
-        break;
-      case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
-        endpoint = "http://localhost:3000/api/ordenes";
->>>>>>> 0a21c3aecf69d8d0cd5518a15717ae125cd5a82b
         break;
       case "Nombre;Cantidad;Precio;Categoria;Vencimiento":
         url = `http://localhost:3000/api/productos/${id}`;
