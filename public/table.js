@@ -16,7 +16,7 @@ const generateHTMLHeaders = (headers) => {
 
 const fillTableBody = async (numberOfFields, endpoint) => {
   try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/users");
+    const response = await fetch(endpoint);
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
@@ -52,18 +52,18 @@ const fillTableBody = async (numberOfFields, endpoint) => {
   }
 };
 
-const generateHTMLForm = (headersList, editData) => {
+const generateHTMLForm = (headersList, editData, id) => {
   let htmlForm = "";
-  headersList.forEach((header, index) => {
+  for (let i = 1; i < headersList.length; i++) {
     htmlForm += `
-        <div class="mb-4">
-            <label class="block text-gray-300 text-sm font-bold mb-2">${header}</label>
-            <input
-                class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text" value="${editData[index]}">
-        </div>
-        `;
-  });
+    <div class="mb-4">
+        <label class="block text-gray-300 text-sm font-bold mb-2">${headersList[i]}</label>
+        <input
+            class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            type="text" value="${editData[i-1]}">
+    </div>
+    `;
+  }
 
   htmlForm += `
     <div class="flex items-center justify-end">
@@ -79,12 +79,14 @@ const generateHTMLForm = (headersList, editData) => {
 
   const btnSend = document.getElementById("send");
   const jsonObject = {};
+  let url = ''
   btnSend.addEventListener("click", () => {
     const textFields = document.getElementsByClassName("textField");
     Array.from(textFields).forEach((textField, index) => {
       jsonObject[headersList[index]] = textField.value;
     });
     const jsonString = JSON.stringify(jsonObject);
+    console.log(jsonString);
 
     switch (headers) {
       case "IdAlmacen;Dirección;Tipo":
@@ -111,10 +113,11 @@ const generateHTMLForm = (headersList, editData) => {
     }
 
     const options = {
-      method: "DELETE",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
+      body : jsonString
     };
 
     fetch(url, options)
@@ -128,6 +131,7 @@ const generateHTMLForm = (headersList, editData) => {
       })
       .then((data) => {
         console.log("Éxito:", data);
+        location.reload();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -141,11 +145,11 @@ const selectEndpoind = () => {
       return "http://localhost:3000/api/almacenes";
     case "Placa;Modelo":
       return "http://localhost:3000/api/camiones";
-    case "Destinatario;Fecha":
+    case "IdGuia;Destinatario;Fecha":
       return "http://localhost:3000/api/guias";
     case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
       return "http://localhost:3000/api/ordenes";
-    case "Nombre;Cantidad;Precio;Categoria;Vencimiento":
+    case "IdProducto;Nombre;Cantidad;Precio;Categoria;Vencimiento":
       return "http://localhost:3000/api/productos";
     case "DNI;Nombre;Direccion":
       return "http://localhost:3000/api/trabajadores";
@@ -161,6 +165,7 @@ const addFunctionalityeEditButton = (editButtons, headersList, editData) => {
 
       const row = editButton.closest("tr");
       const cells = row.querySelectorAll("td");
+      let id = "";
 
       editData = [];
       cells.forEach((cell, index) => {
@@ -171,11 +176,14 @@ const addFunctionalityeEditButton = (editButtons, headersList, editData) => {
         ) {
           editData.push(cell.textContent.trim());
         }
+        if (index === 0) {
+          id = cell.textContent.trim();
+        }
       });
 
-      generateHTMLForm(headersList, editData);
-    });
-  });
+      generateHTMLForm(headersList, editData, id);
+    });
+  });
 };
 
 const addFunctionalityeDeleteButton = (deleteButtons, headers) => {
@@ -196,7 +204,7 @@ const addFunctionalityeDeleteButton = (deleteButtons, headers) => {
             case "Placa;Modelo":
               url = `http://localhost:3000/api/camiones/${id}`;
               break;
-            case "Destinatario;Fecha":
+            case "IdGuia;Destinatario;Fecha":
               url = `http://localhost:3000/api/guias/${id}`;
               break;
             case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
@@ -221,19 +229,9 @@ const addFunctionalityeDeleteButton = (deleteButtons, headers) => {
           };
 
           fetch(url, options)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error(
-                  `Network response was not ok: ${response.statusText}`
-                );
-              }
-              return response.json();
-            })
             .then((data) => {
               console.log("Éxito:", data);
-            })
-            .catch((error) => {
-              console.error("Error:", error);
+              location.reload();
             });
         }
       });

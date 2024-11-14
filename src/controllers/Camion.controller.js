@@ -46,8 +46,8 @@ export const getCamionByPlaca = async (req, res) => {
     //DENTRO DEL pool HACEMOS EL request CON EL query PARA BUSCAR 
     const result = await pool
       .request()
-      .input("placa", req.params.placa)
-      .query("SELECT * FROM Camion WHERE Placa = @placa");
+      .input("Placa", req.params.Placa)
+      .query("SELECT * FROM Camion WHERE Placa = @Placa");
 
     return res.json(result.recordset[0]);
   } catch (error) {
@@ -62,8 +62,8 @@ export const deleteCamionByPlaca = async (req, res) => {
 
     const result = await pool
       .request()
-      .input("placa", req.params.placa)
-      .query("DELETE FROM Camion WHERE Placa = @placa");
+      .input("Placa", req.params.Placa)
+      .query("DELETE FROM Camion WHERE Placa = @Placa");
 
     if (result.rowsAffected[0] === 0) return res.sendStatus(404);
 

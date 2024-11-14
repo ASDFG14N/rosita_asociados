@@ -5,7 +5,9 @@ export const getProductos = async (req, res) => {
 
     const pool = await getConnection();
     const result = await pool.request().query("SELECT * FROM Producto");
-    res.json(result.recordset);
+    const filteredResult = result.recordset.map(({ IdAlmacen, ...rest }) => rest);
+
+    res.json(filteredResult);
   } catch (error) {
     res.status(500);
     res.send(error.message);

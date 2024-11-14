@@ -25,7 +25,7 @@ const producto = document.getElementById("producto");
 producto.addEventListener("click", () => {
   sessionStorage.setItem(
     "tableHeaders",
-    "Nombre;Cantidad;Precio;Categoria;Vencimiento"
+    "IdProducto;Nombre;Cantidad;Precio;Categoria;Vencimiento"
   );
 });
 
