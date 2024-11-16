@@ -1,4 +1,5 @@
 const headers = sessionStorage.getItem("tableHeaders");
+const addButton = document.getElementById("add");
 const closeButton = document.getElementById("close");
 const form = document.getElementById("form-edit");
 const editContainer = document.getElementById("container-edit");
@@ -52,15 +53,18 @@ const fillTableBody = async (numberOfFields, endpoint) => {
   }
 };
 
-const generateHTMLForm = (headersList, editData, id) => {
+const generateHTMLForm = (headersList, editData = [], id) => {
   let htmlForm = "";
   for (let i = 1; i < headersList.length; i++) {
     htmlForm += `
     <div class="mb-4">
-        <label class="block text-gray-300 text-sm font-bold mb-2">${headersList[i]}</label>
-        <input
-            class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text" value="${editData[i-1]}">
+      <label class="block text-gray-300 text-sm font-bold mb-2">${
+        headersList[i]
+      }</label>
+      <input 
+        class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 
+              leading-tight focus:outline-none focus:shadow-outline"
+        type="text" value="${editData.length == 0 ? "" : editData[i - 1]}">
     </div>
     `;
   }
@@ -82,8 +86,10 @@ const generateHTMLForm = (headersList, editData, id) => {
   let url = ''
   btnSend.addEventListener("click", () => {
     const textFields = document.getElementsByClassName("textField");
+    jsonObject[headersList[0]]=id
+    console.log(headersList)
     Array.from(textFields).forEach((textField, index) => {
-      jsonObject[headersList[index]] = textField.value;
+      jsonObject[headersList[index + 1]] = textField.value;
     });
     const jsonString = JSON.stringify(jsonObject);
     console.log(jsonString);
@@ -242,6 +248,10 @@ const addFunctionalityeDeleteButton = (deleteButtons, headers) => {
 if (headers) {
   const headersList = headers.split(";");
   generateHTMLHeaders(headersList);
+  addButton.addEventListener("click", () => {
+    editContainer.classList.remove("hidden");
+    generateHTMLForm(headersList);
+  });
   let endpoint = selectEndpoind();
   let editData = [];
   (async () => {
