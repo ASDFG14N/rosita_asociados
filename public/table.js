@@ -3,6 +3,7 @@ const addButton = document.getElementById("add");
 const closeButton = document.getElementById("close");
 const form = document.getElementById("form-edit");
 const editContainer = document.getElementById("container-edit");
+let optionClick = 0;
 
 const generateHTMLHeaders = (headers) => {
   const headersRow = document.getElementById("headers");
@@ -55,17 +56,21 @@ const fillTableBody = async (numberOfFields, endpoint) => {
 
 const generateHTMLForm = (headersList, editData = [], id) => {
   let htmlForm = "";
-  for (let i = 1; i < headersList.length; i++) {
+  const startIndex = "Placa;Modelo" || "DNI;Nombre;Direccion" ? 0 : 1;
+
+  for (let i = startIndex; i < headersList.length; i++) {
     htmlForm += `
-    <div class="mb-4">
-      <label class="block text-gray-300 text-sm font-bold mb-2">${
-        headersList[i]
-      }</label>
-      <input 
-        class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 
-              leading-tight focus:outline-none focus:shadow-outline"
-        type="text" value="${editData.length == 0 ? "" : editData[i - 1]}">
-    </div>
+      <div class="mb-4">
+        <label class="block text-gray-300 text-sm font-bold mb-2">${
+          headersList[i]
+        }</label>
+        <input 
+          class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 
+                leading-tight focus:outline-none focus:shadow-outline"
+          type="text" value="${
+            editData.length == 0 ? "" : editData[i - (startIndex === 1 ? 1 : 0)]
+          }">
+      </div>
     `;
   }
 
@@ -83,16 +88,14 @@ const generateHTMLForm = (headersList, editData = [], id) => {
 
   const btnSend = document.getElementById("send");
   const jsonObject = {};
-  let url = ''
+  let url = "";
   btnSend.addEventListener("click", () => {
     const textFields = document.getElementsByClassName("textField");
-    jsonObject[headersList[0]]=id
-    console.log(headersList)
+    jsonObject[headersList[0]] = id;
     Array.from(textFields).forEach((textField, index) => {
       jsonObject[headersList[index + 1]] = textField.value;
     });
-    const jsonString = JSON.stringify(jsonObject);
-    console.log(jsonString);
+    const json = JSON.stringify(jsonObject);
 
     switch (headers) {
       case "IdAlmacen;Dirección;Tipo":
@@ -118,12 +121,13 @@ const generateHTMLForm = (headersList, editData = [], id) => {
         return;
     }
 
+    const method = optionClick == 1 ? "POST" : "PUT";
     const options = {
-      method: "PUT",
+      method: method,
       headers: {
         "Content-Type": "application/json",
       },
-      body : jsonString
+      body: json,
     };
 
     fetch(url, options)
@@ -168,6 +172,7 @@ const addFunctionalityeEditButton = (editButtons, headersList, editData) => {
   Array.from(editButtons).forEach((editButton) => {
     editButton.addEventListener("click", () => {
       editContainer.classList.remove("hidden");
+      optionClick = 0;
 
       const row = editButton.closest("tr");
       const cells = row.querySelectorAll("td");
@@ -188,12 +193,11 @@ const addFunctionalityeEditButton = (editButtons, headersList, editData) => {
       });
 
       generateHTMLForm(headersList, editData, id);
-    });
-  });
+    });
+  });
 };
 
 const addFunctionalityeDeleteButton = (deleteButtons, headers) => {
-  let id = "";
   Array.from(deleteButtons).forEach((deleteButton) => {
     deleteButton.addEventListener("click", () => {
       const row = deleteButton.closest("tr");
@@ -234,11 +238,10 @@ const addFunctionalityeDeleteButton = (deleteButtons, headers) => {
             },
           };
 
-          fetch(url, options)
-            .then((data) => {
-              console.log("Éxito:", data);
-              location.reload();
-            });
+          fetch(url, options).then((data) => {
+            console.log("Éxito:", data);
+            location.reload();
+          });
         }
       });
     });
@@ -250,6 +253,7 @@ if (headers) {
   generateHTMLHeaders(headersList);
   addButton.addEventListener("click", () => {
     editContainer.classList.remove("hidden");
+    optionClick = 1;
     generateHTMLForm(headersList);
   });
   let endpoint = selectEndpoind();
