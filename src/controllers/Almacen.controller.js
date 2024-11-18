@@ -90,11 +90,11 @@ export const updateAlmacenById = async (req, res) => {
     const pool = await getConnection();
     const result = await pool
       .request()
-      .input("id", sql.VarChar, IdAlmacen)
+      .input("IdAlmacen", sql.VarChar, IdAlmacen)
       .input("Direccion", sql.VarChar, Direccion)
       .input("Tipo", sql.VarChar, Tipo)
       .query(
-        "UPDATE Almacen SET Direccion = @Direccion, Tipo = @Tipo WHERE IdAlmacen = @id"
+        "UPDATE Almacen SET Direccion = @Direccion, Tipo = @Tipo WHERE IdAlmacen = @IdAlmacen"
       );
 
     if (result.rowsAffected[0] === 0) return res.sendStatus(404);

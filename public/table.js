@@ -56,97 +56,212 @@ const fillTableBody = async (numberOfFields, endpoint) => {
 
 const generateHTMLForm = (headersList, editData = [], id) => {
   let htmlForm = "";
-  const startIndex = "Placa;Modelo" || "DNI;Nombre;Direccion" ? 0 : 1;
+  let startIndex = 0;
+  let startIndexPut = 0;
 
-  for (let i = startIndex; i < headersList.length; i++) {
-    htmlForm += `
-      <div class="mb-4">
-        <label class="block text-gray-300 text-sm font-bold mb-2">${
-          headersList[i]
-        }</label>
-        <input 
-          class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 
-                leading-tight focus:outline-none focus:shadow-outline"
-          type="text" value="${
-            editData.length == 0 ? "" : editData[i - (startIndex === 1 ? 1 : 0)]
-          }">
-      </div>
-    `;
+  if (headers === "Placa;Modelo" || headers === "DNI;Nombre;Direccion") {
+    startIndex = 0;
+    startIndexPut = 1;
+  } else {
+    startIndex = 1;
+    startIndexPut = 0;
   }
 
-  htmlForm += `
-    <div class="flex items-center justify-end">
-        <button
-            id="send"
-            class="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="button">
-            Confirmar
-        </button>
-    </div>`;
+  if (optionClick === 1) {
 
-  form.innerHTML = htmlForm;
-
-  const btnSend = document.getElementById("send");
-  const jsonObject = {};
-  let url = "";
-  btnSend.addEventListener("click", () => {
-    const textFields = document.getElementsByClassName("textField");
-    jsonObject[headersList[0]] = id;
-    Array.from(textFields).forEach((textField, index) => {
-      jsonObject[headersList[index + 1]] = textField.value;
-    });
-    const json = JSON.stringify(jsonObject);
-
-    switch (headers) {
-      case "IdAlmacen;Dirección;Tipo":
-        url = `http://localhost:3000/api/almacenes/${id}`;
-        break;
-      case "Placa;Modelo":
-        url = `http://localhost:3000/api/camiones/${id}`;
-        break;
-      case "Destinatario;Fecha":
-        url = `http://localhost:3000/api/guias/${id}`;
-        break;
-      case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
-        url = `http://localhost:3000/api/ordenes/${id}`;
-        break;
-      case "Nombre;Cantidad;Precio;Categoria;Vencimiento":
-        url = `http://localhost:3000/api/productos/${id}`;
-        break;
-      case "DNI;Nombre;Direccion":
-        url = `http://localhost:3000/api/trabajadores`;
-        break;
-      default:
-        console.error("No matching case found for headers");
-        return;
+    for (let i = startIndex; i < headersList.length; i++) {
+      htmlForm += `
+        <div class="mb-4">
+          <label class="block text-gray-300 text-sm font-bold mb-2">${headersList[i]
+        }</label>
+          <input 
+            class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 
+                  leading-tight focus:outline-none focus:shadow-outline"
+            type="text" value="${editData.length == 0 ? "" : editData[i - 0]
+        }">
+        </div>
+      `;
     }
 
-    const method = optionClick == 1 ? "POST" : "PUT";
-    const options = {
-      method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: json,
-    };
+    htmlForm += `
+      <div class="flex items-center justify-end">
+          <button
+              id="send"
+              class="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button">
+              Confirmar
+          </button>
+      </div>`;
 
-    fetch(url, options)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `Network response was not ok: ${response.statusText}`
-          );
+    form.innerHTML = htmlForm;
+
+    const btnSend = document.getElementById("send");
+    const jsonObject = {};
+    let urlPost = "";
+
+    btnSend.addEventListener("click", () => {
+      const textFields = document.getElementsByClassName("textField");
+      jsonObject[headersList[0]] = id;
+      Array.from(textFields).forEach((textField, index) => {
+        if (startIndex == 1) {
+          jsonObject[headersList[index + 1]] = textField.value
+        } else {
+          jsonObject[headersList[index]] = textField.value;
         }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Éxito:", data);
-        location.reload();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
       });
-  });
+      const json = JSON.stringify(jsonObject);
+      console.log(headersList)
+      console.log(json)
+
+
+      switch (headers) {
+        case "IdAlmacen;Dirección;Tipo":
+          urlPost = `http://localhost:3000/api/almacenes`;
+          break;
+        case "Placa;Modelo":
+          urlPost = `http://localhost:3000/api/camiones`;
+          break;
+        case "Destinatario;Fecha":
+          urlPost = `http://localhost:3000/api/guias`;
+          break;
+        case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
+          urlPost = `http://localhost:3000/api/ordenes`;
+          break;
+        case "Nombre;Cantidad;Precio;Categoria;Vencimiento":
+          urlPost = `http://localhost:3000/api/productos`;
+          break;
+        case "DNI;Nombre;Direccion":
+          urlPost = `http://localhost:3000/api/trabajadores`;
+          break;
+        default:
+          console.error("No matching case found for headers");
+          return;
+      }
+
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json,
+      };
+  
+      fetch(urlPost, options)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Network response was not ok: ${response.statusText}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Éxito:", data);
+          location.reload();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+
+  } else {
+    
+    for (let i = startIndexPut; i < (headersList.length - startIndex); i++) {
+      htmlForm += `
+        <div class="mb-4">
+          <label class="block text-gray-300 text-sm font-bold mb-2">${headersList[i + startIndex]
+        }</label>
+          <input 
+            class="textField shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 
+                  leading-tight focus:outline-none focus:shadow-outline"
+            type="text" value="${editData.length == 0 ? "" : editData[i - startIndexPut]
+        }">
+        </div>
+      `;
+    }
+
+    htmlForm += `
+      <div class="flex items-center justify-end">
+          <button
+              id="send"
+              class="bg-black text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button">
+              Confirmar
+          </button>
+      </div>`;
+
+    form.innerHTML = htmlForm;
+
+    const btnSend = document.getElementById("send");
+    const jsonObject = {};
+    let urlPut = "";
+
+    btnSend.addEventListener("click", () => {
+      const textFields = document.getElementsByClassName("textField");
+      console.log(id)
+      jsonObject[headersList[0]] = id;
+      Array.from(textFields).forEach((textField, index) => {
+        if (startIndexPut == 1) {
+          jsonObject[headersList[index + 1]] = textField.value
+        } else {
+          jsonObject[headersList[index + 1]] = textField.value;
+        }
+      });
+      const json = JSON.stringify(jsonObject);
+      console.log(headersList)
+      console.log(json)
+
+
+      switch (headers) {
+        case "IdAlmacen;Dirección;Tipo":
+          urlPut = `http://localhost:3000/api/almacenes/${id}`;
+          break;
+        case "Placa;Modelo":
+          urlPut = `http://localhost:3000/api/camiones/${id}`;
+          break;
+        case "Destinatario;Fecha":
+          urlPut = `http://localhost:3000/api/guias/${id}`;
+          break;
+        case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
+          urlPut = `http://localhost:3000/api/ordenes/${id}`;
+          break;
+        case "Nombre;Cantidad;Precio;Categoria;Vencimiento":
+          urlPut = `http://localhost:3000/api/productos/${id}`;
+          break;
+        case "DNI;Nombre;Direccion":
+          urlPut = `http://localhost:3000/api/trabajadores/${id}`;
+          break;
+        default:
+          console.error("No matching case found for headers");
+          return;
+      }
+
+      const options = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json,
+      };
+  
+      fetch(urlPut, options)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Network response was not ok: ${response.statusText}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Éxito:", data);
+          location.reload();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+  }
 };
 
 const selectEndpoind = () => {
@@ -224,7 +339,7 @@ const addFunctionalityeDeleteButton = (deleteButtons, headers) => {
               url = `http://localhost:3000/api/productos/${id}`;
               break;
             case "DNI;Nombre;Direccion":
-              url = `http://localhost:3000/api/trabajadores`;
+              url = `http://localhost:3000/api/trabajadores/${id}`;
               break;
             default:
               console.error("No matching case found for headers");

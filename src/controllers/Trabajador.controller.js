@@ -32,7 +32,7 @@ export const createNewTrabajador = async (req, res) => {
       .input("Nombre", sql.VarChar, Nombre)
       .input("Direccion", sql.VarChar, Direccion)
       .query(
-        "INSERT INTO Producto (DNI, Nombre, Direccion) VALUES (@DNI, @Nombre, @Direccion); SELECT SCOPE_IDENTITY() as IdProducto"
+        "INSERT INTO Trabajador (DNI, Nombre, Direccion) VALUES (@DNI, @Nombre, @Direccion); SELECT SCOPE_IDENTITY() as IdProducto"
       );
 
     res.json({
@@ -111,7 +111,7 @@ export const updateTrabajadorByDNI = async (req, res) => {
 
     if (result.rowsAffected[0] === 0) return res.sendStatus(404);
 
-    res.json({ IdGuia, Destinatario, Fecha});
+    res.json({ DNI, Nombre, Direccion});
   } catch (error) {
     res.status(500);
     res.send(error.message);
