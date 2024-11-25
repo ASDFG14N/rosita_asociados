@@ -3,7 +3,7 @@ CREATE DATABASE rositaasociados;
 USE rositaasociados;
 
 CREATE TABLE Almacen (
-    IdAlmacen INT PRIMARY KEY,
+    IdAlmacen INT IDENTITY(1,1) PRIMARY KEY,
     Direccion VARCHAR(255),
     Tipo VARCHAR(50)
 );

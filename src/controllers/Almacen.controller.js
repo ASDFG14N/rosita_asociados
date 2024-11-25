@@ -28,6 +28,8 @@ export const createNewAlmacen = async (req, res) => {
         "INSERT INTO Almacen (Direccion, Tipo) VALUES (@Direccion,@Tipo); SELECT SCOPE_IDENTITY() as IdAlmacen"
       );
 
+    const { IdAlmacen } = result.recordset[0];
+
     res.json({
       IdAlmacen,
       Direccion,
@@ -86,11 +88,13 @@ export const updateAlmacenById = async (req, res) => {
     return res.status(400).json({ msg: "Bad Request. Please fill all fields" });
   }
 
+  const parsedIdAlmacen = parseInt(IdAlmacen, 10); // Convertir a entero
+  
   try {
     const pool = await getConnection();
     const result = await pool
       .request()
-      .input("IdAlmacen", sql.VarChar, IdAlmacen)
+      .input("IdAlmacen", sql.Int, parsedIdAlmacen)
       .input("Direccion", sql.VarChar, Direccion)
       .input("Tipo", sql.VarChar, Tipo)
       .query(

@@ -115,7 +115,7 @@ const generateHTMLForm = (headersList, editData = [], id) => {
 
 
       switch (headers) {
-        case "IdAlmacen;Dirección;Tipo":
+        case "IdAlmacen;Direccion;Tipo":
           urlPost = `http://localhost:3000/api/almacenes`;
           break;
         case "Placa;Modelo":
@@ -198,8 +198,9 @@ const generateHTMLForm = (headersList, editData = [], id) => {
 
     btnSend.addEventListener("click", () => {
       const textFields = document.getElementsByClassName("textField");
-      console.log(id)
-      jsonObject[headersList[0]] = id;
+
+      jsonObject[headersList[0]] = id 
+
       Array.from(textFields).forEach((textField, index) => {
         if (startIndexPut == 1) {
           jsonObject[headersList[index + 1]] = textField.value
@@ -213,7 +214,7 @@ const generateHTMLForm = (headersList, editData = [], id) => {
 
 
       switch (headers) {
-        case "IdAlmacen;Dirección;Tipo":
+        case "IdAlmacen;Direccion;Tipo":
           urlPut = `http://localhost:3000/api/almacenes/${id}`;
           break;
         case "Placa;Modelo":
@@ -225,7 +226,7 @@ const generateHTMLForm = (headersList, editData = [], id) => {
         case "IdOrden;Cantidad;Precio;IdProducto;IdGuia":
           urlPut = `http://localhost:3000/api/ordenes/${id}`;
           break;
-        case "Nombre;Cantidad;Precio;Categoria;Vencimiento":
+        case "IdProducto;Nombre;Cantidad;Precio;Categoria;Vencimiento":
           urlPut = `http://localhost:3000/api/productos/${id}`;
           break;
         case "DNI;Nombre;Direccion":
@@ -266,7 +267,7 @@ const generateHTMLForm = (headersList, editData = [], id) => {
 
 const selectEndpoind = () => {
   switch (headers.trim()) {
-    case "IdAlmacen;Dirección;Tipo":
+    case "IdAlmacen;Direccion;Tipo":
       return "http://localhost:3000/api/almacenes";
     case "Placa;Modelo":
       return "http://localhost:3000/api/camiones";
@@ -323,7 +324,7 @@ const addFunctionalityeDeleteButton = (deleteButtons, headers) => {
           const id = cell.textContent.trim();
 
           switch (headers) {
-            case "IdAlmacen;Dirección;Tipo":
+            case "IdAlmacen;Direccion;Tipo":
               url = `http://localhost:3000/api/almacenes/${id}`;
               break;
             case "Placa;Modelo":

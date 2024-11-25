@@ -1,7 +1,7 @@
 const almacen = document.getElementById("almacen");
 almacen.addEventListener("click", () => {
   //http://localhost:3000/api/almacenes
-  sessionStorage.setItem("tableHeaders", "IdAlmacen;Dirección;Tipo");
+  sessionStorage.setItem("tableHeaders", "IdAlmacen;Direccion;Tipo");
 });
 
 const camion = document.getElementById("camion");

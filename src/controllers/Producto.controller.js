@@ -15,7 +15,7 @@ export const getProductos = async (req, res) => {
 };
 
 export const createNewProducto = async (req, res) => {
-  const { Nombre, Cantidad, Precio, Categoria, Fecha_de_vencimiento, IdAlmacen} = req.body;
+  const { IdAlmacen, Nombre, Cantidad, Precio, Categoria, Fecha_de_vencimiento} = req.body;
   
 
   if (
@@ -28,17 +28,22 @@ export const createNewProducto = async (req, res) => {
 ) {
     return res.status(400).json({ msg: "Bad Request. Please fill all fields" });
   }
+
+  const parsedCantidad = parseInt(Cantidad, 10); // Convertir a entero
+  const parsedPrecio = parseFloat(Precio);      // Convertir a decimal
+  const parsedIdAlmacen = parseInt(IdAlmacen, 10); // Convertir a entero
+
   try {
     const pool = await getConnection();
 
     const result = await pool
       .request()
       .input("Nombre", sql.VarChar, Nombre)
-      .input("Cantidad", sql.Int, Cantidad)
-      .input("Precio", sql.Decimal, Precio)
+      .input("Cantidad", sql.Int, parsedCantidad) // Usar el valor parseado
+      .input("Precio", sql.Decimal, parsedPrecio) // Usar el valor parseado
       .input("Categoria", sql.VarChar, Categoria)
       .input("Fecha_de_vencimiento", sql.Date, Fecha_de_vencimiento)
-      .input("IdAlmacen", sql.Int, IdAlmacen)
+      .input("IdAlmacen", sql.Int, parsedIdAlmacen) // Usar el valor parseado
       .query(
         "INSERT INTO Producto (Nombre, Cantidad, Precio, Categoria, Fecha_de_vencimiento, IdAlmacen) VALUES (@Nombre, @Cantidad, @Precio, @Categoria, @Fecha_de_vencimiento, @IdAlmacen); SELECT SCOPE_IDENTITY() as IdProducto"
       );
