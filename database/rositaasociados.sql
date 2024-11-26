@@ -68,12 +68,12 @@ CREATE TABLE Orden (
     FOREIGN KEY (IdGuia) REFERENCES Guia_de_reemision(IdGuia)
 );
 
-INSERT INTO Almacen (IdAlmacen, Direccion, Tipo) VALUES
-(1, 'Calle Alborada 123', 'Central'),
-(2, 'Avenida Siempreviva 742', 'Sucursal'),
-(3, 'Boulevard de los Sueños 456', 'Central'),
-(4, 'Calle de la Luna 789', 'Sucursal'),
-(5, 'Camino del Rey 101', 'Sucursal');
+INSERT INTO Almacen (Direccion, Tipo) VALUES
+('Calle Alborada 123', 'Central'),
+('Avenida Siempreviva 742', 'Sucursal'),
+('Boulevard de los Sueños 456', 'Central'),
+('Calle de la Luna 789', 'Sucursal'),
+('Camino del Rey 101', 'Sucursal');
 
 INSERT INTO Producto (IdProducto, Nombre, Cantidad, Precio, Categoria, Fecha_de_vencimiento, IdAlmacen) VALUES
 (1, 'Oreo', 100, 9.99, 'Galletas', '2024-12-31', 1),
@@ -258,4 +258,104 @@ INNER JOIN Producto P ON O.IdProducto = P.IdProducto
 INNER JOIN Almacen A ON P.IdAlmacen = A.IdAlmacen
 WHERE O.IdGuia = 3;
 
+#vistas
+CREATE VIEW TrabajadoresPorAlmacen AS
+SELECT 
+    t.DNI,
+    t.Nombre,
+    ta.Rol,
+    a.Direccion AS Almacen
+FROM 
+    Trabajador t
+INNER JOIN 
+    Trabajador_Almacen ta ON t.DNI = ta.DNI_trabajador
+INNER JOIN 
+    Almacen a ON ta.IdAlmacen = a.IdAlmacen;
+
+#Llamada
+SELECT * FROM TrabajadoresPorAlmacen;
+
+#back up
+BACKUP DATABASE rositaasociados 
+TO DISK = 'C:\Backups\rositaasociados.bak';
+
+#funciones
+CREATE FUNCTION CalcularValorProducto (
+    @IdProducto INT
+)
+RETURNS DECIMAL(10, 2)
+AS
+BEGIN
+    DECLARE @ValorTotal DECIMAL(10, 2);
+    
+    SELECT @ValorTotal = Cantidad * Precio
+    FROM Producto
+    WHERE IdProducto = @IdProducto;
+    
+    RETURN @ValorTotal;
+END;
+
+SELECT dbo.CalcularValorProducto(2) AS ValorTotal;
+
+#cursor
+CREATE PROCEDURE AjustarPreciosPorCategoria (
+    @Categoria VARCHAR(50),
+    @PorcentajeIncremento DECIMAL(5, 2)
+)
+AS
+BEGIN
+    DECLARE @IdProducto INT, @PrecioActual DECIMAL(10, 2);
+    
+    DECLARE CursorProductos CURSOR FOR
+    SELECT IdProducto, Precio
+    FROM Producto
+    WHERE Categoria = @Categoria;
+    
+    OPEN CursorProductos;
+    FETCH NEXT FROM CursorProductos INTO @IdProducto, @PrecioActual;
+    
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        UPDATE Producto
+        SET Precio = @PrecioActual + (@PrecioActual * @PorcentajeIncremento / 100)
+        WHERE IdProducto = @IdProducto;
+        
+        FETCH NEXT FROM CursorProductos INTO @IdProducto, @PrecioActual;
+    END;
+    
+    CLOSE CursorProductos;
+    DEALLOCATE CursorProductos;
+END;
+
+EXEC AjustarPreciosPorCategoria 'Bebidas', 10;
+select* from Producto p 
+order by p.Categoria;
+
+#trigger
+CREATE TRIGGER trg_RestarCantidadProducto
+ON Orden
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Actualizar la cantidad del producto al registrar una orden
+    UPDATE Producto
+    SET Producto.Cantidad = Producto.Cantidad - i.Cantidad
+    FROM Producto
+    INNER JOIN INSERTED i ON Producto.IdProducto = i.IdProducto
+    WHERE Producto.Cantidad >= i.Cantidad;
+
+    -- Validar si no hay suficiente inventario y generar un error
+    IF EXISTS (
+        SELECT 1
+        FROM Producto
+        INNER JOIN INSERTED i ON Producto.IdProducto = i.IdProducto
+        WHERE Producto.Cantidad < i.Cantidad
+    )
+    BEGIN
+        ROLLBACK TRANSACTION;
+        THROW 50001, 'No hay suficiente cantidad disponible para el producto.', 1;
+    END;
+END;
 

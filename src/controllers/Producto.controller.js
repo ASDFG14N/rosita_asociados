@@ -29,9 +29,9 @@ export const createNewProducto = async (req, res) => {
     return res.status(400).json({ msg: "Bad Request. Please fill all fields" });
   }
 
-  const parsedCantidad = parseInt(Cantidad, 10); // Convertir a entero
-  const parsedPrecio = parseFloat(Precio);      // Convertir a decimal
-  const parsedIdAlmacen = parseInt(IdAlmacen, 10); // Convertir a entero
+  const parsedCantidad = parseInt(Cantidad, 10); 
+  const parsedPrecio = parseFloat(Precio);     
+  const parsedIdAlmacen = parseInt(IdAlmacen, 10);
 
   try {
     const pool = await getConnection();
@@ -39,11 +39,11 @@ export const createNewProducto = async (req, res) => {
     const result = await pool
       .request()
       .input("Nombre", sql.VarChar, Nombre)
-      .input("Cantidad", sql.Int, parsedCantidad) // Usar el valor parseado
-      .input("Precio", sql.Decimal, parsedPrecio) // Usar el valor parseado
+      .input("Cantidad", sql.Int, parsedCantidad) 
+      .input("Precio", sql.Decimal, parsedPrecio)
       .input("Categoria", sql.VarChar, Categoria)
       .input("Fecha_de_vencimiento", sql.Date, Fecha_de_vencimiento)
-      .input("IdAlmacen", sql.Int, parsedIdAlmacen) // Usar el valor parseado
+      .input("IdAlmacen", sql.Int, parsedIdAlmacen)
       .query(
         "INSERT INTO Producto (Nombre, Cantidad, Precio, Categoria, Fecha_de_vencimiento, IdAlmacen) VALUES (@Nombre, @Cantidad, @Precio, @Categoria, @Fecha_de_vencimiento, @IdAlmacen); SELECT SCOPE_IDENTITY() as IdProducto"
       );
